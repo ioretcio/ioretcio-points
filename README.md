@@ -1,1 +1,1 @@
-# ioretcio-pointsg
+Пошук особливих точок на базі мікрокомп'ютера RaspberryPi4
