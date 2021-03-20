@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
-  "Ariadne"
-  "Ariadne.pdb"
   "CMakeFiles/Ariadne.dir/Ariadne.cpp.o"
+  "program.out"
+  "program.out.pdb"
 )
 
 # Per-language clean rules from dependency scanning.
