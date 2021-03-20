@@ -1,3 +1,0 @@
-/home/pi/Dev/Ariadne/CMakeFiles/rebuild_cache.dir
-/home/pi/Dev/Ariadne/CMakeFiles/Ariadne.dir
-/home/pi/Dev/Ariadne/CMakeFiles/edit_cache.dir
