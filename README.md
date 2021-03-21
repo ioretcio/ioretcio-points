@@ -4,7 +4,6 @@ git clone https://github.com/yuriy-goncharuk/ioretcio-points/
 cd ioretcio-points
 ```
 Для встановлення opencv v4 використовується скрипт користувача  spmallick [link]( https://github.com/spmallick). 
-
 [script origin](https://github.com/spmallick/learnopencv/blob/master/InstallScripts/installOpenCV-4-raspberry-pi.sh)
 
 *(Попередження- процедура займає близько 90 хвилин)*
