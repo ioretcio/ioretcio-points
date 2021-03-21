@@ -3,8 +3,10 @@
 
 [script origin](https://github.com/spmallick/learnopencv/blob/master/InstallScripts/installOpenCV-4-raspberry-pi.sh)
 
+```
 cd Setup
 chmod +x installOpenCV-4-raspberry-pi.sh
 ./installOpenCV-4-raspberry-pi.sh
+```
 
 дана процедура займає близько 90 хвилин
