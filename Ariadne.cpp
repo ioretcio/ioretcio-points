@@ -6,28 +6,10 @@
 #include <opencv2/features2d.hpp>
 #include <opencv2/imgproc.hpp>
 #include <math.h>
-//#include <mavsdk/mavsdk.h>
-//
-//
-//
+#include "AriadneFiles/GeoPoint.h"
 using namespace std;
 using namespace cv;
-//
-//
-const int RTerra = 6378137;
-//
-//
-struct TerraPoint{
-	double Lat;
-	double Long;
-};
-TerraPoint getOffset(TerraPoint start, double xmOffset, double ymOffset)
-{
-	TerraPoint result;
-	result.Lat = xmOffset / RTerra;
-	result.Long = ymOffset/(RTerra*cos(M_PI*start.Lat/180));
-	return result;
-}
+
 double GetHeight(Mat image)
 {
 	Mat img, img_gray, channel[3];
@@ -104,7 +86,6 @@ int sort_matches_increasing(vector< DMatch >& matches, vector< KeyPoint > oldKey
 
 			int dist2 = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 
-			//cout << "compare" << dist1 << "and" << dist2 << endl;
 			if (dist1 > dist2)
 			{
 				if(minlen>dist2)
@@ -151,9 +132,9 @@ int main()
 	int skips = 3;
 	//
 	//
-	TerraPoint totalMeters;
+	Ariadne::GeoPoint totalMeters;
 	totalMeters.Lat = totalMeters.Long = 0;
-	TerraPoint totalReal;
+	Ariadne::GeoPoint totalReal;
 	totalReal.Lat = totalReal.Long = 0;
 	//
 	//
@@ -206,7 +187,7 @@ int main()
 		Mat demo = currentPicture.clone(); 
 		//
 		//
-		TerraPoint average;
+		Ariadne::GeoPoint average;
 		average.Lat =0;
 		average.Long = 0;
 		//

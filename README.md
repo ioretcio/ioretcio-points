@@ -1,9 +1,9 @@
 # Пошук особливих точок на базі мікрокомп'ютера RaspberryPi4
 ```
-git clone https://github.com/yuriy-goncharuk/ioretcio-points/
+git clone https://github.com/ioretcio/ioretcio-points
 cd ioretcio-points
 ```
-Для встановлення opencv v4 використовується скрипт користувача  spmallick [link]( https://github.com/spmallick). 
+Для встановлення opencv v4 використовується скрипт користувача  [spmallick]( https://github.com/spmallick)  
 [script origin](https://github.com/spmallick/learnopencv/blob/master/InstallScripts/installOpenCV-4-raspberry-pi.sh)
 
 *(Попередження- процедура займає близько 90 хвилин)*
