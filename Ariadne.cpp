@@ -54,11 +54,11 @@ int main()
 	int y1 ;
 	int x2;
 	int y2;
-
+//
 	int frame_width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
-	int frame_height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
-
-	cv::VideoWriter video("TestVideos/outcpp.avi",cv::CV_FOURCC('M','J','P','G'),10, cv::Size(frame_width,frame_height));
+    int frame_height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
+    int codec = cv::VideoWriter::fourcc('M', 'J', 'P', 'G');
+    cv::VideoWriter video("TestVideos/TankHuntR.mp4", codec, 10, cv::Size(frame_width, frame_height), true);
 
 	while(1)
 	{
@@ -67,11 +67,18 @@ int main()
 			cap >> currentPicture;
 			frameIterator ++;
 		}
+		if (currentPicture.empty())
+		{
+	      	break;
+		}
 
+		
 		detector->detect(currentPicture, currentKeyPoints);
 		extractor->compute(currentPicture, currentKeyPoints, currentDescriptors);
-		brue_force_matcher.match((const cv::OutputArray)oldDescriptors, (const cv::OutputArray)currentDescriptors,  matches);
-		std::cout<<std::endl<<"current minlen"<<DMatchSort::sort_matches_increasing(matches, oldKeyPoints,currentKeyPoints )<<std::endl;
+		
+		brue_force_matcher.match((const cv::OutputArray)oldDescriptors,
+		 (const cv::OutputArray)currentDescriptors,  matches);
+		//std::cout<<std::endl<<"current minlen"<<DMatchSort::sort_matches_increasing(matches, oldKeyPoints,currentKeyPoints )<<std::endl;
 
 		if (matches.size() > BEST_MATHCES)
 		{ 
@@ -101,9 +108,10 @@ int main()
 		totalMeters.Lat += average.Lat;
 		totalMeters.Long += average.Long;
 
-		std::cout<<"average on this step" << average.Lat << " " << average.Long << std::endl;
-		std::cout<<"totalMeters " << totalMeters.Lat << " " << totalMeters.Long << std::endl;
-		std::cout<<"total average" << totalMeters.Lat/frameIterator <<  " " << totalMeters.Long/frameIterator << std::endl;
+		// std::cout<<"average on this step" << average.Lat << " " << average.Long << std::endl;
+		// std::cout<<"totalMeters " << totalMeters.Lat << " " << totalMeters.Long << std::endl;
+		// std::cout<<"total average" << totalMeters.Lat/frameIterator <<  " " << totalMeters.Long/frameIterator << std::endl;
+		//video.write(demo);
 		imshow("demo", demo);
 		oldPicture = currentPicture;
 		oldKeyPoints = currentKeyPoints;
