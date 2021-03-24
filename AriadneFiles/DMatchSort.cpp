@@ -1,8 +1,6 @@
 #include "DMatchSort.h"
 
-
-
-int sort_matches_increasing(vector< DMatch >& matches, vector< KeyPoint > oldKeyPoints, vector< KeyPoint > currentKeyPoints )
+int DMatchSort::sort_matches_increasing(std::vector< cv::DMatch >& matches, std::vector<  cv::KeyPoint > oldKeyPoints, std::vector< cv::KeyPoint > currentKeyPoints )
 {
 	int minlen = 1000;
 	for (int i = 0; i < matches.size(); i++)

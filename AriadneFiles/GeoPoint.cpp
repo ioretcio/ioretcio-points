@@ -1,6 +1,7 @@
 #include "GeoPoint.h"
+#include <math.h>
 const int RADIUS_OF_TERRA = 6378137;
-double Ariadne::GeoPoint::getOffset(GeoPoint start, double xmOffset, double ymOffset)
+GeoPoint getOffset(GeoPoint start, double xmOffset, double ymOffset)
 {
 	GeoPoint result;
 	result.Lat = xmOffset / RADIUS_OF_TERRA;

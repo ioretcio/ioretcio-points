@@ -1,8 +1,11 @@
-namespace Ariadne
+#include <vector>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/features2d.hpp>
+#include <opencv2/imgproc.hpp>
+class DMatchSort
 {
-    class DMatchSort
-    {
-    public:
-        int sort_matches_increasing(std::vector<cv::DMatch >& matches, vector< KeyPoint > oldKeyPoints, vector< KeyPoint > currentKeyPoints )
-    };
-}
+public:
+    int seventy_two = 72;
+    static int sort_matches_increasing(std::vector<cv::DMatch >& matches, std::vector< cv::KeyPoint > oldKeyPoints, std::vector< cv::KeyPoint > currentKeyPoints );
+};

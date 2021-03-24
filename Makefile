@@ -150,6 +150,60 @@ Ariadne.cpp.s:
 	$(MAKE) -f CMakeFiles/Ariadne.dir/build.make CMakeFiles/Ariadne.dir/Ariadne.cpp.s
 .PHONY : Ariadne.cpp.s
 
+AriadneFiles/DMatchSort.o: AriadneFiles/DMatchSort.cpp.o
+
+.PHONY : AriadneFiles/DMatchSort.o
+
+# target to build an object file
+AriadneFiles/DMatchSort.cpp.o:
+	$(MAKE) -f CMakeFiles/Ariadne.dir/build.make CMakeFiles/Ariadne.dir/AriadneFiles/DMatchSort.cpp.o
+.PHONY : AriadneFiles/DMatchSort.cpp.o
+
+AriadneFiles/DMatchSort.i: AriadneFiles/DMatchSort.cpp.i
+
+.PHONY : AriadneFiles/DMatchSort.i
+
+# target to preprocess a source file
+AriadneFiles/DMatchSort.cpp.i:
+	$(MAKE) -f CMakeFiles/Ariadne.dir/build.make CMakeFiles/Ariadne.dir/AriadneFiles/DMatchSort.cpp.i
+.PHONY : AriadneFiles/DMatchSort.cpp.i
+
+AriadneFiles/DMatchSort.s: AriadneFiles/DMatchSort.cpp.s
+
+.PHONY : AriadneFiles/DMatchSort.s
+
+# target to generate assembly for a file
+AriadneFiles/DMatchSort.cpp.s:
+	$(MAKE) -f CMakeFiles/Ariadne.dir/build.make CMakeFiles/Ariadne.dir/AriadneFiles/DMatchSort.cpp.s
+.PHONY : AriadneFiles/DMatchSort.cpp.s
+
+AriadneFiles/GeoPoint.o: AriadneFiles/GeoPoint.cpp.o
+
+.PHONY : AriadneFiles/GeoPoint.o
+
+# target to build an object file
+AriadneFiles/GeoPoint.cpp.o:
+	$(MAKE) -f CMakeFiles/Ariadne.dir/build.make CMakeFiles/Ariadne.dir/AriadneFiles/GeoPoint.cpp.o
+.PHONY : AriadneFiles/GeoPoint.cpp.o
+
+AriadneFiles/GeoPoint.i: AriadneFiles/GeoPoint.cpp.i
+
+.PHONY : AriadneFiles/GeoPoint.i
+
+# target to preprocess a source file
+AriadneFiles/GeoPoint.cpp.i:
+	$(MAKE) -f CMakeFiles/Ariadne.dir/build.make CMakeFiles/Ariadne.dir/AriadneFiles/GeoPoint.cpp.i
+.PHONY : AriadneFiles/GeoPoint.cpp.i
+
+AriadneFiles/GeoPoint.s: AriadneFiles/GeoPoint.cpp.s
+
+.PHONY : AriadneFiles/GeoPoint.s
+
+# target to generate assembly for a file
+AriadneFiles/GeoPoint.cpp.s:
+	$(MAKE) -f CMakeFiles/Ariadne.dir/build.make CMakeFiles/Ariadne.dir/AriadneFiles/GeoPoint.cpp.s
+.PHONY : AriadneFiles/GeoPoint.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -162,6 +216,12 @@ help:
 	@echo "... Ariadne.o"
 	@echo "... Ariadne.i"
 	@echo "... Ariadne.s"
+	@echo "... AriadneFiles/DMatchSort.o"
+	@echo "... AriadneFiles/DMatchSort.i"
+	@echo "... AriadneFiles/DMatchSort.s"
+	@echo "... AriadneFiles/GeoPoint.o"
+	@echo "... AriadneFiles/GeoPoint.i"
+	@echo "... AriadneFiles/GeoPoint.s"
 .PHONY : help
 
 

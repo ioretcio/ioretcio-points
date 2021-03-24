@@ -1,10 +1,7 @@
-namespace Ariadne
+class GeoPoint
 {
-    class GeoPoint
-    {
-    public:
-        double Lat;
-        double Long;
-        double getOffset(GeoPoint start, double xmOffset, double ymOffset);
-    };
-}
+public:
+    double Lat;
+    double Long;
+    double getOffset(GeoPoint start, double xmOffset, double ymOffset);
+};
