@@ -10,104 +10,100 @@
 
 int main()
 {
+	const uint SKIPPED_FRAMES = 3;
+	const uint BEST_MATHCES = 10;
+
+
 	cv::Ptr<cv::FeatureDetector> detector = cv::ORB::create();
 	cv::Ptr<cv::DescriptorExtractor> extractor = cv::ORB::create();
-	cv::Mat allArea = cv::imread("/home/pi/ariadne/imageee.JPG");
 	cv::BFMatcher brue_force_matcher = cv::BFMatcher(cv::NORM_HAMMING, true);
-	cv::Mat oldPicture, currentPicture, oldDescriptors, currentDescriptors,output_image;
+
+	cv::Mat oldPicture;
+	cv::Mat currentPicture; 
+
+	cv::Mat oldDescriptors;
+	cv::Mat currentDescriptors;
+
+	cv::Mat output_image;
 
 	std::vector<cv::DMatch > matches;
-	std::vector<cv::KeyPoint > currentKeyPoints;
-	//VideoCapture cap("/home/pi/altair/tank.mp4");
-	//cap >> oldPicture;
-
-	int xxx = 0;
-	int yyy = 0;
-	int picsize = 600;
-	//
-	oldPicture = allArea(cv::Rect(xxx,yyy,picsize,picsize));
-	//
+	
 	std::vector< cv::KeyPoint > oldKeyPoints;
+	std::vector<cv::KeyPoint > currentKeyPoints;
+
+	cv::VideoCapture cap("TestVideos/TankHunt.mp4");
+	cap >> oldPicture;
+
 	detector->detect(oldPicture, oldKeyPoints);
 	extractor->compute(oldPicture, oldKeyPoints, oldDescriptors);
-	//
-	int skips = 3;
-	//
-	//
+	
 	GeoPoint totalMeters;
 	totalMeters.Lat = totalMeters.Long = 0;
 	GeoPoint totalReal;
 	totalReal.Lat = totalReal.Long = 0;
-	//
-	//
-	int count_of_frames = 0;
+
+	int frameIterator = 0;
+	const cv::Scalar LINECOLOR(0,255,0);
+	const uint LINETHICKNESS = 2;
+	cv::Mat demo;
+	GeoPoint average;
+
+	int img1_idx;
+	int img2_idx;
+	int x1;
+	int y1 ;
+	int x2;
+	int y2;
+
+	int frame_width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
+	int frame_height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
+
+	cv::VideoWriter video("TestVideos/outcpp.avi",cv::CV_FOURCC('M','J','P','G'),10, cv::Size(frame_width,frame_height));
+
 	while(1)
 	{
-		std::cout<<"\n\n\n";
-		if(count_of_frames<10*2)
+		for(int i = 0 ; i< SKIPPED_FRAMES ; i++)
 		{
-			yyy += 40;
+			cap >> currentPicture;
+			frameIterator ++;
 		}
-		if(count_of_frames>=10*2&&count_of_frames<20*2)
-		{
-			yyy -= 40;
-		}
-		if(count_of_frames>=20*2&&count_of_frames<30*2)
-		{
-			xxx += 40;
-		}
-		if(count_of_frames>=30*2&&count_of_frames<40*2)
-		{
-			xxx -= 40;
-		}
-		if(count_of_frames>=40*2)
-			break;
-		for(int i=0; i< skips; i++)
-			currentPicture = allArea(cv::Rect(xxx,yyy,picsize,picsize));
-		//for(int i = 0 ; i< skips ; i++)
-		//	cap >> currentPicture;
+
 		detector->detect(currentPicture, currentKeyPoints);
 		extractor->compute(currentPicture, currentKeyPoints, currentDescriptors);
 		brue_force_matcher.match((const cv::OutputArray)oldDescriptors, (const cv::OutputArray)currentDescriptors,  matches);
-	
+		std::cout<<std::endl<<"current minlen"<<DMatchSort::sort_matches_increasing(matches, oldKeyPoints,currentKeyPoints )<<std::endl;
 
+		if (matches.size() > BEST_MATHCES)
+		{ 
+			matches.resize(BEST_MATHCES);
+		}
 
-		std::cout<<"current minlen"<<DMatchSort::sort_matches_increasing(matches, oldKeyPoints,currentKeyPoints )<<std::endl;
-
-		int machlim = 10;
-		if (matches.size() > machlim) matches.resize(machlim);
-
-		cv::Scalar colorLine(0,255,0); // Green
-		int thicknessLine = 2;
-
-		cv::Mat demo = currentPicture.clone(); 
-
-		GeoPoint average;
+		demo = currentPicture.clone(); 
 		average.Lat =0;
 		average.Long = 0;
 
 		for(int i = 0 ; i < matches.size(); i++)
 		{
-				int img1_idx = matches[i].queryIdx;
-    			int img2_idx = matches[i].trainIdx;
-				cv::line(demo, oldKeyPoints[img1_idx].pt, currentKeyPoints[img2_idx].pt, colorLine, thicknessLine);
-				int x1 = oldKeyPoints[img1_idx].pt.x;
-				int y1 = oldKeyPoints[img1_idx].pt.y;
-				int x2 = currentKeyPoints[img2_idx].pt.x;
-				int y2 = currentKeyPoints[img2_idx].pt.y;
-
+				img1_idx = matches[i].queryIdx;
+    			img2_idx = matches[i].trainIdx;
+				cv::line(demo, oldKeyPoints[img1_idx].pt, currentKeyPoints[img2_idx].pt, LINECOLOR, LINETHICKNESS);
+				x1 = oldKeyPoints[img1_idx].pt.x;
+				y1 = oldKeyPoints[img1_idx].pt.y;
+				x2 = currentKeyPoints[img2_idx].pt.x;
+				y2 = currentKeyPoints[img2_idx].pt.y;
 				average.Lat += x2-x1;
 				average.Long += y2-y1;
 		}
+
 		average.Lat /= matches.size();
 		average.Long /= matches.size();
 
 		totalMeters.Lat += average.Lat;
 		totalMeters.Long += average.Long;
-		count_of_frames ++;
+
 		std::cout<<"average on this step" << average.Lat << " " << average.Long << std::endl;
 		std::cout<<"totalMeters " << totalMeters.Lat << " " << totalMeters.Long << std::endl;
-		std::cout<<"total average" << totalMeters.Lat/count_of_frames <<  " " << totalMeters.Long/count_of_frames << std::endl;
+		std::cout<<"total average" << totalMeters.Lat/frameIterator <<  " " << totalMeters.Long/frameIterator << std::endl;
 		imshow("demo", demo);
 		oldPicture = currentPicture;
 		oldKeyPoints = currentKeyPoints;
