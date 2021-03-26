@@ -1,17 +1,20 @@
 #include <iostream>
 #include <vector>
 #include <typeinfo>
+#include <string.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/features2d.hpp>
 #include <opencv2/imgproc.hpp>
 #include "AriadneFiles/DMatchSort.h"
 #include "AriadneFiles/GeoPoint.h"
-
+#include <cmath>
 int main()
 {
-	const uint SKIPPED_FRAMES = 3;
-	const uint BEST_MATHCES = 10;
+	const uint SKIPPED_FRAMES = 1;
+	const uint BEST_MATHCES = 27;
+	const cv::Scalar LINECOLOR(255,0,255);
+	const uint LINETHICKNESS = 2;
 
 
 	cv::Ptr<cv::FeatureDetector> detector = cv::ORB::create();
@@ -31,8 +34,10 @@ int main()
 	std::vector< cv::KeyPoint > oldKeyPoints;
 	std::vector<cv::KeyPoint > currentKeyPoints;
 
-	cv::VideoCapture cap("TestVideos/TankHunt.mp4");
-	cap >> oldPicture;
+	// cv::VideoCapture cap("TestVideos/TankHunt.mp4");
+	// cap >> oldPicture;
+	cv::Mat fullSizedPicture;
+	fullSizedPicture = cv::imread("TestPhotos/DSC_1954.JPG");
 
 	detector->detect(oldPicture, oldKeyPoints);
 	extractor->compute(oldPicture, oldKeyPoints, oldDescriptors);
@@ -43,41 +48,51 @@ int main()
 	totalReal.Lat = totalReal.Long = 0;
 
 	int frameIterator = 0;
-	const cv::Scalar LINECOLOR(0,255,0);
-	const uint LINETHICKNESS = 2;
+
 	cv::Mat demo;
 	GeoPoint average;
 
 	int img1_idx;
 	int img2_idx;
-	int x1;
-	int y1 ;
-	int x2;
-	int y2;
-//
-	int frame_width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
-    int frame_height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
-    int codec = cv::VideoWriter::fourcc('M', 'J', 'P', 'G');
-    cv::VideoWriter video("TestVideos/TankHuntR.mp4", codec, 10, cv::Size(frame_width, frame_height), true);
+	int x1=0;
+	int y1=0;
 
+	int tmpx1, tmpx2, tmpy1, tmpy2;
+
+	cv::Rect myROI(x1, y1, 1000, 1000);
+	oldPicture = fullSizedPicture(myROI);
+	std::string result = "";
+
+	int totalErrorx = 0;
+	int totalErrory = 0;
+	int countOfFrames = 0;
 	while(1)
 	{
-		for(int i = 0 ; i< SKIPPED_FRAMES ; i++)
-		{
-			cap >> currentPicture;
-			frameIterator ++;
-		}
-		if (currentPicture.empty())
-		{
-	      	break;
-		}
+		countOfFrames ++;
+		x1+=10;
+		y1+=10;
+		cv::Rect myROI(x1, y1, 1000, 1000);
+		currentPicture = fullSizedPicture(myROI);
+		
+		// for(int i = 0 ; i< SKIPPED_FRAMES ; i++)
+		// {
+		// 	cap >> currentPicture;
+		// 	frameIterator ++;
+		// }
+		// if (currentPicture.empty())
+		// {
+	    //   	break;
+		// }
 
 		
 		detector->detect(currentPicture, currentKeyPoints);
 		extractor->compute(currentPicture, currentKeyPoints, currentDescriptors);
-		
+
 		brue_force_matcher.match((const cv::OutputArray)oldDescriptors,
-		 (const cv::OutputArray)currentDescriptors,  matches);
+			(const cv::OutputArray)currentDescriptors,  matches);
+
+		DMatchSort::sort_matches_increasing(matches, oldKeyPoints,currentKeyPoints);
+		
 		//std::cout<<std::endl<<"current minlen"<<DMatchSort::sort_matches_increasing(matches, oldKeyPoints,currentKeyPoints )<<std::endl;
 
 		if (matches.size() > BEST_MATHCES)
@@ -88,18 +103,30 @@ int main()
 		demo = currentPicture.clone(); 
 		average.Lat =0;
 		average.Long = 0;
+		int stepErrorX = 0;
+				int stepErrorY = 0;
 
 		for(int i = 0 ; i < matches.size(); i++)
 		{
 				img1_idx = matches[i].queryIdx;
     			img2_idx = matches[i].trainIdx;
 				cv::line(demo, oldKeyPoints[img1_idx].pt, currentKeyPoints[img2_idx].pt, LINECOLOR, LINETHICKNESS);
-				x1 = oldKeyPoints[img1_idx].pt.x;
-				y1 = oldKeyPoints[img1_idx].pt.y;
-				x2 = currentKeyPoints[img2_idx].pt.x;
-				y2 = currentKeyPoints[img2_idx].pt.y;
-				average.Lat += x2-x1;
-				average.Long += y2-y1;
+				tmpx1 = oldKeyPoints[img1_idx].pt.x;
+				tmpy1 = oldKeyPoints[img1_idx].pt.y;
+				tmpx2 = currentKeyPoints[img2_idx].pt.x;
+				tmpy2 = currentKeyPoints[img2_idx].pt.y;
+
+				stepErrorX += std::abs(10-(tmpx2-tmpx1));
+				stepErrorY += std::abs(10-(tmpy2-tmpy1));
+
+				average.Lat += tmpx2-tmpx1;
+				average.Long += tmpy2-tmpy1;
+		}
+		std::cout<<matches.size()<<std::endl;
+		if(matches.size()!=0)
+		{
+		totalErrorx += stepErrorX/ matches.size();
+		totalErrory += stepErrorY/ matches.size();
 		}
 
 		average.Lat /= matches.size();
@@ -120,6 +147,7 @@ int main()
         if (c == 27)
             break;
 	}
+	std::cout<<totalErrorx/countOfFrames << " "<< totalErrory/countOfFrames <<std::endl;
 	extractor.release();
 	detector.release();
 }
